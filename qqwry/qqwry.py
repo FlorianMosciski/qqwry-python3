@@ -2,13 +2,13 @@
 #
 # for Python 3.0+
 # 来自 https://pypi.python.org/pypi/qqwry-py3
-# 版本：2015-12-16
+# 版本：2017-08-13
 #
 # 用法
 # ============
 # from qqwry import QQwry
 # q = QQwry()
-# q.load_file('qqwry.dat', loadindex=False)
+# q.load_file('qqwry.dat')
 # result = q.lookup('8.8.8.8')
 # 
 # 
@@ -21,18 +21,18 @@
 # 当参数loadindex=False时（默认参数）：
 # ﻿程序行为：把整个文件读入内存，从中搜索
 # ﻿加载速度：很快，0.004 秒
-# ﻿进程内存：较少，12.6 MB
-# ﻿查询速度：较慢，3.9 万次/秒
+# ﻿进程内存：较少，16.9 MB
+# ﻿查询速度：较慢，5.3 万次/秒
 # ﻿使用建议：适合桌面程序、大中小型网站
 # 
 # ﻿﻿当参数loadindex=True时：
 # ﻿程序行为：把整个文件读入内存。额外加载索引，把索引读入更快的数据结构
-# ﻿加载速度：★★★非常慢，因为要额外加载索引，0.82 秒★★★
-# ﻿进程内存：较多，17.7 MB
-# ﻿查询速度：较快，10.2 万次/秒
+# ﻿加载速度：★★★非常慢，因为要额外加载索引，0.78 秒★★★
+# ﻿进程内存：较多，22.0 MB
+# ﻿查询速度：较快，18.0 万次/秒
 # ﻿使用建议：仅适合高负载服务器
 # 
-# ﻿﻿（以上是在i3 3.6GHz, Win10, Python 3.5.0rc2 64bit，qqwry.dat 8.85MB时的数据）
+# ﻿﻿（以上是在i3 3.6GHz, Win10, Python 3.6.2 64bit，qqwry.dat 8.86MB时的数据）
 # 
 # 
 # 解释q.lookup('8.8.8.8')函数
@@ -59,6 +59,8 @@
 
 import array
 import bisect
+import struct
+import socket
 
 __all__ = ('QQwry',)
     
@@ -99,7 +101,7 @@ class QQwry:
                     self.data = buffer = f.read()
             except Exception as e:
                 print('打开、读取文件时出错：', e)
-                self.clean()
+                self.clear()
                 return False
             
             if self.data == None:
@@ -107,7 +109,7 @@ class QQwry:
                 self.clear()
                 return False
         else:
-            self.clean()
+            self.clear()
             return False
         
         if len(buffer) < 8:
@@ -165,7 +167,7 @@ class QQwry:
         self.__fun = self.__index_search
         return True
         
-    def __get_addr(self, offset):        
+    def __get_addr(self, offset):
         # mode 0x01, full jump
         mode = self.data[offset]
         if mode == 1:
@@ -191,8 +193,7 @@ class QQwry:
             
     def lookup(self, ip_str):
         try:
-            ip = sum(256**j*int(i) for j,i 
-                      in enumerate(ip_str.strip().split('.')[::-1]))
+            ip = struct.unpack(">I", socket.inet_aton(ip_str))[0]
             return self.__fun(ip)
         except:
             return None
