@@ -2,7 +2,7 @@
 #
 # for Python 3.0+
 # 来自 https://pypi.python.org/pypi/qqwry-py3
-# 版本：2017-08-13
+# 版本：2020-06-25
 #
 # 用法
 # ============
@@ -61,9 +61,12 @@ import array
 import bisect
 import struct
 import socket
+import logging
 
 __all__ = ('QQwry',)
-    
+
+logger = logging.getLogger(__name__)
+
 def int3(data, offset):
     return data[offset] + (data[offset+1] << 8) + \
            (data[offset+2] << 16)
@@ -100,12 +103,12 @@ class QQwry:
                 with open(filename, 'br') as f:
                     self.data = buffer = f.read()
             except Exception as e:
-                print('打开、读取文件时出错：', e)
+                logger.error('%s open failed：%s' % (filename, str(e)))
                 self.clear()
                 return False
             
             if self.data == None:
-                print('%s load failed' % filename)
+                logger.error('%s load failed' % filename)
                 self.clear()
                 return False
         else:
@@ -113,7 +116,7 @@ class QQwry:
             return False
         
         if len(buffer) < 8:
-            print('%s load failed, file only %d bytes' % 
+            logger.error('%s load failed, file only %d bytes' % 
                   (filename, len(buffer))
                   )
             self.clear()
@@ -125,7 +128,7 @@ class QQwry:
         if index_begin > index_end or \
            (index_end - index_begin) % 7 != 0 or \
            index_end + 7 > len(buffer):
-            print('%s index error' % filename)
+            logger.error('%s index error' % filename)
             self.clear()
             return False
         
@@ -134,7 +137,7 @@ class QQwry:
         self.index_count = (index_end - index_begin) // 7 + 1
         
         if not loadindex:
-            print('%s %s bytes, %d segments. without index.' %
+            logger.info('%s %s bytes, %d segments. without index.' %
                   (filename, format(len(buffer),','), self.index_count)
                  )
             self.__fun = self.__raw_search
@@ -157,11 +160,11 @@ class QQwry:
                 self.idx2.append(ip_end)
                 self.idxo.append(offset+4)
         except:
-            print('%s load index error' % filename)
+            logger.error('%s load index error' % filename)
             self.clear()
             return False
 
-        print('%s %s bytes, %d segments. with index.' % 
+        logger.info('%s %s bytes, %d segments. with index.' % 
               (filename, format(len(buffer),','), len(self.idx1))
                )
         self.__fun = self.__index_search

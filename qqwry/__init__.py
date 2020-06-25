@@ -1,7 +1,7 @@
 from .qqwry import QQwry
 from .cz88update import updateQQwry
 
-__version__ = '1.0.7'
+__version__ = '1.0.9'
 
 __all__ = ('QQwry', 'updateQQwry')
 

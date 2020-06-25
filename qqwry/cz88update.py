@@ -25,8 +25,11 @@
 import struct
 import urllib.request
 import zlib
+import logging
 
 __all__ = ('updateQQwry',)
+
+logger = logging.getLogger(__name__)
 
 def updateQQwry(filename):
     def get_fetcher():
@@ -35,18 +38,22 @@ def updateQQwry(filename):
         # opener
         opener = urllib.request.build_opener(proxy)
         
-        def open_url(url):
+        def open_url(file_name, url):
             # request对象
             req = urllib.request.Request(url)
             ua = ('Mozilla/5.0 (Windows NT 6.1; rv:38.0)'
                   ' Gecko/20100101 Firefox/38.0')
             req.add_header('User-Agent', ua)
-            
+
             try:
                 # r是HTTPResponse对象
                 r = opener.open(req, timeout=60)
-                return r.read()
+                dat = r.read()
+                if not dat:
+                    raise Exception('文件大小为零')
+                return dat
             except Exception as e:
+                logger.error('下载%s时出错: %s' % (file_name, str(e)))
                 return None
         
         return open_url
@@ -55,27 +62,29 @@ def updateQQwry(filename):
     
     # download copywrite.rar
     url = 'http://update.cz88.net/ip/copywrite.rar'
-    data = fetcher(url)
+    data = fetcher('copywrite.rar', url)
     if not data:
         return -1
-    
+
     # extract infomation from copywrite.rar
     if len(data) <= 24 or data[:4] != b'CZIP':
+        logger.error('解析copywrite.rar时出错')
         return -2
     
     version, unknown1, size, unknown2, key = \
         struct.unpack_from('<IIIII', data, 4)
     if unknown1 != 1:
+        logger.error('解析copywrite.rar时出错')
         return -2
     
     # download qqwry.rar
     url = 'http://update.cz88.net/ip/qqwry.rar'
-    data = fetcher(url)
-    
+    data = fetcher('qqwry.rar', url)
     if not data:
         return -3
     
     if size != len(data):
+        logger.error('qqwry.rar文件大小不符合copywrite.rar的数据')
         return -4
     
     # decrypt
@@ -89,6 +98,7 @@ def updateQQwry(filename):
     try:
         data = zlib.decompress(data)
     except:
+        logger.error('解压缩qqwry.rar时出错')
         return -5
 
     if filename == None:
@@ -100,8 +110,10 @@ def updateQQwry(filename):
                 f.write(data)
             return len(data)
         except:
+            logger.error('保存到最终文件时出错')
             return -6
     else:
+        logger.error('保存到最终文件时出错')
         return -6
 
 if __name__ == '__main__':
