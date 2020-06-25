@@ -40,10 +40,11 @@ def updateQQwry(filename):
         
         def open_url(file_name, url):
             # request对象
-            req = urllib.request.Request(url)
-            ua = ('Mozilla/5.0 (Windows NT 6.1; rv:38.0)'
-                  ' Gecko/20100101 Firefox/38.0')
-            req.add_header('User-Agent', ua)
+            headers = {
+            'User-Agent': 'Mozilla/3.0 (compatible; Indy Library)',
+            'Host': 'update.cz88.net'
+            }
+            req = urllib.request.Request(url, headers=headers)
 
             try:
                 # r是HTTPResponse对象
