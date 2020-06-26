@@ -1,6 +1,8 @@
 用于在qqwry.dat里查找IP地址归属地。
 
-﻿另提供一个从纯真网络更新qqwry.dat的小工具。
+另提供一个从纯真网络更新qqwry.dat的小工具。
+
+已上传到PyPI，执行此命令即可安装：``pip install qqwry-py3``
 
 ﻿﻿特点
 ======
