@@ -93,3 +93,101 @@ q对象是否已加载数据，返回True或False
 | -4：qqwry.rar文件大小不符合copywrite.rar的数据
 | -5：解压缩qqwry.rar时出错
 | -6：保存到最终文件时出错
+
+***English Translated***
+It is used to find the IP address in qqwry.dat, and also provides a small tool to update qqwry.dat from the pure network.
+
+It has been uploaded to PyPI and can be installed by executing this command: ``pip install qqwry-py3''
+
+Features
+======
+
+1. for Python 3.0+.
+
+2. Provide two sets of implementations for selection. One finds faster, but loads slowly and takes up more memory.
+
+3. The query speed on i3 3.6GHz and Python 3.6 is 180,000 times per second.
+
+4. Provide a small tool to update qqwry.dat from Chunzhen Network (cz88.net), see the last part of this article for usage.
+
+usage
+======
+
+  >>> from qqwry import QQwry
+  >>> q = QQwry()
+  >>> q.load_file('qqwry.dat')
+  >>> q.lookup('8.8.8.8')
+  ('United States','Google DNS server in Mountain View, Santa Clara County, California')
+
+Explain the q.load_file(filename, loadindex=False) function
+----------------------------------------------
+
+|
+| Load the qqwry.dat file. Return True on success, False on failure.
+| The parameter filename can be the file name of qqwry.dat (str type), or the file content of bytes type.
+|
+| When the parameter loadindex=False (default parameter):
+| Program behavior: read the entire file into memory, search from it
+| Loading speed: very fast, 0.004 seconds
+| Process memory: less, 16.9 MB
+| Query speed: slower, 53,000 times per second
+| Suggestions for use: suitable for desktop programs, large, medium and small websites
+|
+| When the parameter loadindex=True:
+| Program behavior: Read the entire file into memory. Load an additional index, read the index into a faster data structure
+| Loading speed: ★★★Very slow, because of the additional loading index, 0.78 seconds★★★
+| Process memory: more, 22.0 MB
+| Query speed: faster, 180,000 times per second
+| Recommendations for use: only suitable for high-load servers
+|
+| (The above is the data when i3 3.6GHz, Win10, Python 3.6.2 64bit, qqwry.dat 8.86MB)
+
+Explain the q.lookup('8.8.8.8') function
+
+---------------------------
+
+|
+| If found, return a tuple containing two strings, such as: ('country','province')
+| If no result is found, a None is returned
+
+Explain the q.clear() function
+-----------------
+
+|
+| Clear the loaded qqwry.dat
+| It is not necessary to execute q.clear() when calling load_file again
+
+Explain the q.is_loaded() function
+---------------------
+
+Whether the q object has loaded data, return True or False
+
+Explain the q.get_lastone() function
+-----------------------
+
+|
+| Return the last piece of data, the last piece is usually the version number of the data
+| Return None if there is no data
+
+Update the widget of qqwry.dat from Chunzhen Network (cz88.net)
+========================================
+
+  >>> from qqwry import updateQQwry
+  >>> ret = updateQQwry(filename)
+
+|
+| When the parameter filename is of type str, it indicates the name of the file to be saved.
+| Upon success, it returns a positive integer, which is the number of bytes in the file; | upon failure, it returns a negative integer.
+|
+| When the parameter filename is None, the function directly returns the content of the qqwry.dat file (a bytes object).
+| Return a bytes object on success; return a negative integer on failure. Here to determine whether the type of the return value is bytes or int.
+
+
+|
+| Errors represented by negative integers:
+| -1: An error occurred while downloading copywrite.rar
+| -2: Error when parsing copywrite.rar
+| -3: An error occurred when downloading qqwry.rar
+| -4: qqwry.rarfile size does not match the data of copywrite.rar
+| -5: Error when decompressing qqwry.rar
+| -6: An error occurred while saving to the final file
