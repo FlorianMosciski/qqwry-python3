@@ -178,7 +178,8 @@ Update the widget of qqwry.dat from Chunzhen Network (cz88.net)
 
 |
 | When the parameter filename is of type str, it indicates the name of the file to be saved.
-| Upon success, it returns a positive integer, which is the number of bytes in the file; | upon failure, it returns a negative integer.
+| Upon success, it returns a positive integer, which is the number of bytes in the file;
+| Upon failure, it returns a negative integer.
 |
 | When the parameter filename is None, the function directly returns the content of the qqwry.dat file (a bytes object).
 | Return a bytes object on success; return a negative integer on failure. Here to determine whether the type of the return value is bytes or int.
