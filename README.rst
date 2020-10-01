@@ -71,6 +71,9 @@ q对象是否已加载数据，返回True或False
 | 返回最后一条数据，最后一条通常为数据的版本号
 | 没有数据则返回一个None
 
+  >>> q.get_lastone()
+  ('纯真网络', '2020年9月30日IP数据')
+
 从纯真网络(cz88.net)更新qqwry.dat的小工具
 =========================================
 
@@ -143,7 +146,6 @@ Explain the q.load_file(filename, loadindex=False) function
 | (The above is the data when i3 3.6GHz, Win10, Python 3.6.2 64bit, qqwry.dat 8.86MB)
 
 Explain the q.lookup('8.8.8.8') function
-
 ---------------------------
 
 |
@@ -168,6 +170,9 @@ Explain the q.get_lastone() function
 |
 | Return the last piece of data, the last piece is usually the version number of the data
 | Return None if there is no data
+
+  >>> q.get_lastone()
+  ('纯真网络', '2020年9月30日IP数据')
 
 Update the widget of qqwry.dat from Chunzhen Network (cz88.net)
 ========================================
