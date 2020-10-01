@@ -195,8 +195,9 @@ class QQwry:
                p.decode('gb18030', errors='replace')
             
     def lookup(self, ip_str):
+        ip = struct.unpack(">I", socket.inet_aton(ip_str.strip()))[0]
+
         try:
-            ip = struct.unpack(">I", socket.inet_aton(ip_str))[0]
             return self.__fun(ip)
         except:
             return None
