@@ -97,13 +97,9 @@ q对象是否已加载数据，返回True或False
 | -5：解压缩qqwry.rar时出错
 | -6：保存到最终文件时出错
 
-***English Translated***
-It is used to find the IP address in qqwry.dat, and also provides a small tool to update qqwry.dat from the pure network.
-
-It has been uploaded to PyPI and can be installed by executing this command: ``pip install qqwry-py3''
 
 Features
-======
+========
 
 1. for Python 3.0+.
 
@@ -123,7 +119,7 @@ usage
   ('United States','Google DNS server in Mountain View, Santa Clara County, California')
 
 Explain the q.load_file(filename, loadindex=False) function
-----------------------------------------------
+-----------------------------------------------------------
 
 |
 | Load the qqwry.dat file. Return True on success, False on failure.
@@ -146,26 +142,26 @@ Explain the q.load_file(filename, loadindex=False) function
 | (The above is the data when i3 3.6GHz, Win10, Python 3.6.2 64bit, qqwry.dat 8.86MB)
 
 Explain the q.lookup('8.8.8.8') function
----------------------------
+----------------------------------------
 
 |
 | If found, return a tuple containing two strings, such as: ('country','province')
 | If no result is found, a None is returned
 
 Explain the q.clear() function
------------------
+------------------------------
 
 |
 | Clear the loaded qqwry.dat
 | It is not necessary to execute q.clear() when calling load_file again
 
 Explain the q.is_loaded() function
----------------------
+----------------------------------
 
 Whether the q object has loaded data, return True or False
 
 Explain the q.get_lastone() function
------------------------
+------------------------------------
 
 |
 | Return the last piece of data, the last piece is usually the version number of the data
@@ -175,7 +171,7 @@ Explain the q.get_lastone() function
   ('纯真网络', '2020年9月30日IP数据')
 
 Update the widget of qqwry.dat from Chunzhen Network (cz88.net)
-========================================
+===============================================================
 
   >>> from qqwry import updateQQwry
   >>> ret = updateQQwry(filename)
