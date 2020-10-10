@@ -8,7 +8,7 @@ def read_file(path):
 
 setup(
     name='qqwry-py3',
-    version='1.2.0',
+    version='1.2.1',
     description='Lookup location of IP in qqwry.dat, for Python 3.0+',
     long_description=read_file('README.rst'),
     long_description_content_type='text/x-rst',
@@ -18,7 +18,10 @@ setup(
     license='BSD',
     keywords = 'qqwry cz88 纯真 ip归属地',
     platforms=['any'],
+    package_dir={'qqwry': 'qqwry'},
+    py_modules=['qqwry.__init__', 'qqwry.qqwry', 'qqwry.cz88update'],
     packages=['qqwry'],
+    package_data={"qqwry": ['py.typed']},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
