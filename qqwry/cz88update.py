@@ -26,12 +26,19 @@ import struct
 import urllib.request
 import zlib
 import logging
+from typing import Union
 
 __all__ = ('updateQQwry',)
 
 logger = logging.getLogger(__name__)
 
-def updateQQwry(filename):
+def updateQQwry(filename: Union[str, None]) -> Union[int, bytes]:
+    '''1.当参数filename是str类型时，表示要保存的文件名。
+       成功后返回一个正整数，是文件的字节数；失败则返回一个负整数。
+
+       2.当参数filename是None时，函数直接返回qqwry.dat的文件内容（一个bytes对象）。
+       成功后返回一个bytes对象；失败则返回一个负整数。
+       这里要判断一下返回值的类型是bytes还是int。'''
     def get_fetcher():
         # no proxy
         proxy = urllib.request.ProxyHandler({})

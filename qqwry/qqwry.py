@@ -62,6 +62,7 @@ import bisect
 import struct
 import socket
 import logging
+from typing import Tuple, Union
 
 __all__ = ('QQwry',)
 
@@ -76,10 +77,11 @@ def int4(data, offset):
            (data[offset+2] << 16) + (data[offset+3] << 24)
 
 class QQwry:
-    def __init__(self):
+    def __init__(self) -> None:
         self.clear()
 
-    def clear(self):
+    def clear(self) -> None:
+        '''清空加载的数据，再次调用.load_file()时不必执行.clear()。'''
         self.idx1 = None
         self.idx2 = None
         self.idxo = None
@@ -91,7 +93,9 @@ class QQwry:
 
         self.__fun = None
 
-    def load_file(self, filename, loadindex=False):
+    def load_file(self, filename: Union[str, bytes], loadindex: bool=False) -> bool:
+        '''加载qqwry.dat文件。成功返回True，失败返回False。
+        参数filename可以是qqwry.dat的文件名（str类型），也可以是bytes类型的文件内容。'''
         self.clear()
 
         if type(filename) == bytes:
@@ -194,13 +198,19 @@ class QQwry:
         return c.decode('gb18030', errors='replace'), \
                p.decode('gb18030', errors='replace')
 
-    def lookup(self, ip_str):
+    def lookup(self, ip_str: str) -> Union[Tuple[str, str], None]:
+        '''查找IP地址的归属地。
+           找到则返回一个含有两个字符串的元组，如：('国家', '省份')
+           没有找到结果，则返回一个None。'''
         ip = struct.unpack(">I", socket.inet_aton(ip_str.strip()))[0]
 
         try:
             return self.__fun(ip)
         except:
-            return None
+            if not self.is_loaded():
+                logger.error('Error: qqwry.dat not loaded yet.')
+            else:
+                raise
 
     def __raw_search(self, ip):
         l = 0
@@ -235,10 +245,14 @@ class QQwry:
         else:
             return None
 
-    def is_loaded(self):
+    def is_loaded(self) -> bool:
+        '''是否已加载数据，返回True或False。'''
         return self.__fun != None
 
-    def get_lastone(self):
+    def get_lastone(self) -> Union[Tuple[str, str], None]:
+        '''返回最后一条数据，最后一条通常为数据的版本号。
+           没有数据则返回一个None。
+           如：('纯真网络', '2020年9月30日IP数据')'''
         try:
             offset = int3(self.data, self.index_end+4)
             return self.__get_addr(offset+4)
